@@ -1,0 +1,27 @@
+
+# ==========================================
+# STYLEINPL - DEPENDENCIAS PRINCIPALES
+# Python 3.14
+# ==========================================
+
+# Framework y servidor ASGI
+fastapi==0.162.4
+uvicorn[standard]==0.54.0
+
+# Validacion y configuracion
+pydantic==2.14.3
+pydantic-settings==2.16.2
+python-dotenv
+
+# Base de datos MongoDB con soporte asincrono
+pymongo==4.19.0
+
+# Autenticacion y seguridad
+PyJWT==2.15.1
+pwdlib[argon2]==0.3.1
+
+# Archivos e imagenes
+python-multipart==0.0.33
+
+# Validacion de correo electronico
+email-validator==2.3.0
