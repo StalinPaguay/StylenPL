@@ -1,0 +1,44 @@
+services:
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - stylenpl_network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/
+      MONGODB_DATABASE: stylenpl
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - mongodb
+    networks:
+      - stylenpl_network
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      - backend
+    networks:
+      - stylenpl_network
+
+volumes:
+  mongodb_data:
+    external: true
+    name: stylenpl_mongodb_data
+
+networks:
+  stylenpl_network:
+    driver: bridge
