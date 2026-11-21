@@ -246,3 +246,71 @@ form button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* Mostrar errores de validación solo después de interactuar */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown),
+select:invalid {
+  border-color: #d1d5db;
+}
+
+input:valid:not(:placeholder-shown),
+textarea:valid:not(:placeholder-shown),
+select:valid {
+  border-color: #d1d5db;
+}
+
+input:focus:invalid:not(:placeholder-shown),
+textarea:focus:invalid:not(:placeholder-shown),
+select:focus:invalid {
+  border-color: #dc2626;
+}
+
+/* Navegación de autenticación */
+.auth-navigation {
+  display: block;
+  width: min(420px, calc(100% - 40px));
+  margin: -8vh auto 40px;
+  background: transparent;
+  color: #6d28d9;
+  border: 2px solid #6d28d9;
+}
+
+.auth-navigation:hover {
+  background: #ede9fe;
+}
+
+form input {
+  width: 100%;
+}
+
+form button {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .auth-navigation {
+    margin-top: -12px;
+  }
+}
+
+/* Mostrar u ocultar contraseñas */
+.password-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.password-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #6d28d9;
+  cursor: pointer;
+  flex-shrink: 0;
+}

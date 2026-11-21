@@ -1,33 +1,40 @@
-﻿const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+﻿import { sessionService } from './sessionService'
 
 export async function apiRequest(path, options = {}) {
-  const { token, headers: customHeaders, ...requestOptions } = options
+  const { token, headers: customHeaders, ...fetchOptions } = options
 
   const headers = {
+    ...(fetchOptions.body ? { 'Content-Type': 'application/json' } : {}),
     ...customHeaders,
-  }
-
-  if (requestOptions.body && !(requestOptions.body instanceof FormData)) {
-    headers['Content-Type'] = 'application/json'
   }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...requestOptions,
-    headers,
-  })
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL || '/api'}${path}`,
+    { ...fetchOptions, headers }
+  )
+
+  if (response.status === 401 && token) {
+    sessionService.clearToken()
+    window.dispatchEvent(new Event('stylenpl:session-expired'))
+    throw new Error('Tu sesión ha expirado. Inicia sesión nuevamente.')
+  }
+
+  if (response.status === 204) return null
+
+  const data = await response.json().catch(() => null)
 
   if (!response.ok) {
-    const error = await response.json().catch(() => null)
-    throw new Error(error?.detail || `Error HTTP ${response.status}`)
+    const detail = data?.detail
+    throw new Error(
+      typeof detail === 'string'
+        ? detail
+        : 'No se pudo completar la solicitud.'
+    )
   }
 
-  if (response.status === 204) {
-    return null
-  }
-
-  return response.json()
+  return data
 }

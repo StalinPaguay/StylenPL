@@ -1,11 +1,12 @@
 ﻿import { useState } from 'react'
 import { authService } from '../services/authService'
 
-export default function LoginPage({ onLogin }) {
+export default function LoginPage({ onLogin, sessionMessage = '' }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -27,26 +28,36 @@ export default function LoginPage({ onLogin }) {
       <h1>StyleInPL</h1>
       <h2>Iniciar sesión</h2>
 
+      {sessionMessage && <p role="status">{sessionMessage}</p>}
+      {error && <p role="alert">{error}</p>}
+
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Correo electrónico</label>
+        <label htmlFor="login-email">Correo electrónico</label>
         <input
-          id="email"
+          id="login-email"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
         />
 
-        <label htmlFor="password">Contraseña</label>
+        <label htmlFor="login-password">Contraseña</label>
         <input
-          id="password"
-          type="password"
+          id="login-password"
+          type={showPassword ? "text" : "password"}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
         />
 
-        {error && <p role="alert">{error}</p>}
+        <label className="password-toggle">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(event) => setShowPassword(event.target.checked)}
+          />
+          Mostrar contraseña
+        </label>
 
         <button type="submit" disabled={loading}>
           {loading ? 'Ingresando...' : 'Iniciar sesión'}
@@ -55,3 +66,5 @@ export default function LoginPage({ onLogin }) {
     </main>
   )
 }
+
+
