@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import ClothingForm from '../components/ClothingForm'
 import ClothingList from '../components/ClothingList'
+import WardrobeStats from '../components/WardrobeStats'
 import { clothingService } from '../services/clothingService'
 
 export default function WardrobePage({ token, onLogout }) {
@@ -41,6 +42,9 @@ export default function WardrobePage({ token, onLogout }) {
     <main>
       <h1>StyleInPL</h1>
       <h2>Mi armario digital</h2>
+      <p className="wardrobe-counter">
+        Prendas registradas: <strong>{clothes.length}</strong>
+      </p>
 
       {loading && <p>Cargando prendas...</p>}
       {error && <p role="alert">{error}</p>}
@@ -53,6 +57,8 @@ export default function WardrobePage({ token, onLogout }) {
         <ClothingList token={token} clothes={clothes} onDeleted={handleDeleted} />
       )}
 
+      {!loading && !error && <WardrobeStats clothes={clothes} />}
+
       <ClothingForm token={token} onCreated={handleCreated} />
 
       <button type="button" onClick={onLogout}>
@@ -61,3 +67,5 @@ export default function WardrobePage({ token, onLogout }) {
     </main>
   )
 }
+
+
