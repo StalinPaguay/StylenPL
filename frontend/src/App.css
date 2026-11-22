@@ -314,3 +314,31 @@ form button {
   cursor: pointer;
   flex-shrink: 0;
 }
+
+/* Estados de publicaciones */
+.exchange-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.exchange-status select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2937;
+  font: inherit;
+}
+
+.exchange-status select:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.exchange-status select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

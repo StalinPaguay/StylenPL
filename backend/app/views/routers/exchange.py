@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Response, status
 
 from backend.app.controllers.exchange_controller import ExchangeController
 from backend.app.core.dependencies import get_current_user_id
-from backend.app.schemas.exchange import ExchangeCreate, ExchangeResponse
+from backend.app.schemas.exchange import ExchangeCreate, ExchangeResponse, ExchangeStatusUpdate
 
 router = APIRouter(prefix="/exchanges", tags=["Intercambios"])
 
@@ -38,7 +38,7 @@ async def create_exchange(
 
 @router.get("/{exchange_id}", response_model=ExchangeResponse)
 async def get_exchange(exchange_id: str):
-    """Consultar una publicación por identificador."""
+    """Consultar una publicaciÃ³n por identificador."""
     return await ExchangeController().get_by_id(exchange_id)
 
 
@@ -47,6 +47,18 @@ async def delete_exchange(
     exchange_id: str,
     owner_id: str = Depends(get_current_user_id),
 ):
-    """Eliminar una publicación propia."""
+    """Eliminar una publicaciÃ³n propia."""
     await ExchangeController().delete(exchange_id, owner_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.patch("/{exchange_id}/status", response_model=ExchangeResponse)
+async def update_exchange_status(
+    exchange_id: str,
+    data: ExchangeStatusUpdate,
+    owner_id: str = Depends(get_current_user_id),
+):
+    """Actualizar el estado de una publicación propia."""
+    return await ExchangeController().update_status(
+        exchange_id, owner_id, data.status
+    )

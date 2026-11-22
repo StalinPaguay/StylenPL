@@ -1,4 +1,4 @@
-﻿import { apiRequest } from './api'
+import { apiRequest } from './api'
 
 export const exchangeService = {
   list: () => apiRequest('/exchanges/'),
@@ -15,4 +15,11 @@ export const exchangeService = {
     method: 'DELETE',
     token,
   }),
+
+  updateStatus: (exchangeId, status, token) =>
+    apiRequest(`/exchanges/${exchangeId}/status`, {
+      method: 'PATCH',
+      token,
+      body: JSON.stringify({ status }),
+    }),
 }

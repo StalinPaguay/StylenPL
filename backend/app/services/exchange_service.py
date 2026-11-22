@@ -7,7 +7,7 @@ from backend.app.repositories.exchange_repository import ExchangeRepository
 
 
 class ExchangeService:
-    """Lógica de negocio del mercado de intercambios."""
+    """LÃ³gica de negocio del mercado de intercambios."""
 
     def __init__(self, repository=None, clothing_repository=None):
         self.repository = repository if repository is not None else ExchangeRepository()
@@ -19,7 +19,7 @@ class ExchangeService:
 
     @staticmethod
     def serialize(exchange: dict) -> dict:
-        """Convertir un documento MongoDB en una respuesta pública."""
+        """Convertir un documento MongoDB en una respuesta pÃºblica."""
         return {
             "id": str(exchange["_id"]),
             "owner_id": exchange["owner_id"],
@@ -31,13 +31,20 @@ class ExchangeService:
         }
 
     async def create(self, owner_id: str, data):
-        """Publicar únicamente prendas pertenecientes al usuario."""
+        """Publicar Ãºnicamente prendas pertenecientes al usuario."""
         clothing = await self.clothing_repository.find_by_id_and_owner(
             data.clothing_id, owner_id
         )
 
         if clothing is None:
             raise ValueError("La prenda no existe o no pertenece al usuario")
+
+        existing = await self.repository.find_active_by_clothing(
+            data.clothing_id, owner_id
+        )
+
+        if existing is not None:
+            raise ValueError("La prenda ya tiene una publicación activa")
 
         document = {
             **data.model_dump(),
@@ -65,5 +72,13 @@ class ExchangeService:
         return self.serialize(exchange) if exchange else None
 
     async def delete(self, exchange_id: str, owner_id: str):
-        """Eliminar únicamente publicaciones propias."""
+        """Eliminar Ãºnicamente publicaciones propias."""
         return await self.repository.delete(exchange_id, owner_id)
+
+    async def update_status(self, exchange_id: str, owner_id: str, new_status: str):
+        """Actualizar el estado de una publicación propia."""
+        exchange = await self.repository.update_status(
+            exchange_id, owner_id, new_status
+        )
+
+        return self.serialize(exchange) if exchange else None

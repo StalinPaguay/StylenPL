@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ExchangeForm from '../components/ExchangeForm'
 import ExchangeList from '../components/ExchangeList'
 import ExchangeCatalog from '../components/ExchangeCatalog'
@@ -63,8 +63,28 @@ export default function ExchangePage({ token, onBack }) {
   }
 
   function handleCreated(exchange) {
-    setExchanges((current) => [exchange, ...current])
+    if (exchange.status === 'disponible') {
+      setExchanges((current) => [exchange, ...current])
+    }
     setMyExchanges((current) => [exchange, ...current])
+  }
+
+  function handleUpdated(updatedExchange) {
+    setMyExchanges((current) =>
+      current.map((exchange) =>
+        exchange.id === updatedExchange.id ? updatedExchange : exchange
+      )
+    )
+
+    setExchanges((current) => {
+      const withoutUpdated = current.filter(
+        (exchange) => exchange.id !== updatedExchange.id
+      )
+
+      return updatedExchange.status === 'disponible'
+        ? [updatedExchange, ...withoutUpdated]
+        : withoutUpdated
+    })
   }
 
   function handleDeleted(exchangeId) {
@@ -102,6 +122,7 @@ export default function ExchangePage({ token, onBack }) {
           <ExchangeForm
             token={token}
             clothes={clothes}
+            myExchanges={myExchanges}
             onCreated={handleCreated}
           />
 
@@ -109,6 +130,7 @@ export default function ExchangePage({ token, onBack }) {
             token={token}
             exchanges={myExchanges}
             onDeleted={handleDeleted}
+            onUpdated={handleUpdated}
           />
 
           <ExchangeCatalog exchanges={exchanges} />

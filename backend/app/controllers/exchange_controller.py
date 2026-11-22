@@ -17,9 +17,15 @@ class ExchangeController:
         try:
             exchange = await self.service.create(owner_id, data)
         except ValueError as exc:
+            message = str(exc)
+
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="La prenda no existe o no pertenece al usuario",
+                status_code=(
+                    status.HTTP_409_CONFLICT
+                    if "ya tiene una" in message
+                    else status.HTTP_404_NOT_FOUND
+                ),
+                detail=message,
             ) from exc
 
         return ExchangeResponse(**exchange)
@@ -35,8 +41,38 @@ class ExchangeController:
         return [ExchangeResponse(**item) for item in exchanges]
 
     async def get_by_id(self, exchange_id: str) -> ExchangeResponse:
-        """Consultar una publicación."""
+        """Consultar una publicaciÃ³n."""
         exchange = await self.service.get_by_id(exchange_id)
+
+        if exchange is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="PublicaciÃ³n no encontrada",
+            )
+
+        return ExchangeResponse(**exchange)
+
+    async def delete(self, exchange_id: str, owner_id: str) -> None:
+        """Eliminar una publicaciÃ³n propia."""
+        deleted = await self.service.delete(exchange_id, owner_id)
+
+        if not deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="PublicaciÃ³n no encontrada",
+            )
+
+    async def update_status(self, exchange_id: str, owner_id: str, new_status: str):
+        """Actualizar el estado de una publicación propia."""
+        try:
+            exchange = await self.service.update_status(
+                exchange_id, owner_id, new_status
+            )
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=str(exc),
+            ) from exc
 
         if exchange is None:
             raise HTTPException(
@@ -44,14 +80,4 @@ class ExchangeController:
                 detail="Publicación no encontrada",
             )
 
-        return ExchangeResponse(**exchange)
-
-    async def delete(self, exchange_id: str, owner_id: str) -> None:
-        """Eliminar una publicación propia."""
-        deleted = await self.service.delete(exchange_id, owner_id)
-
-        if not deleted:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Publicación no encontrada",
-            )
+        return exchange

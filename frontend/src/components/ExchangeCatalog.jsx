@@ -1,17 +1,15 @@
-﻿import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export default function ExchangeCatalog({ exchanges }) {
   const [search, setSearch] = useState('')
-  const [status, setStatus] = useState('todos')
   const [sort, setSort] = useState('recientes')
 
   const filteredExchanges = useMemo(() => {
     const results = exchanges.filter((exchange) => {
       const text = `${exchange.title} ${exchange.description || ''}`.toLowerCase()
       const matchesSearch = text.includes(search.trim().toLowerCase())
-      const matchesStatus = status === 'todos' || exchange.status === status
 
-      return matchesSearch && matchesStatus
+      return matchesSearch
     })
 
     return [...results].sort((a, b) => {
@@ -24,7 +22,7 @@ export default function ExchangeCatalog({ exchanges }) {
 
       return sort === 'antiguos' ? dateA - dateB : dateB - dateA
     })
-  }, [exchanges, search, status, sort])
+  }, [exchanges, search, sort])
 
   return (
     <section>
@@ -38,18 +36,6 @@ export default function ExchangeCatalog({ exchanges }) {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />
-
-      <label htmlFor="exchange-status">Filtrar por estado</label>
-      <select
-        id="exchange-status"
-        value={status}
-        onChange={(event) => setStatus(event.target.value)}
-      >
-        <option value="todos">Todos</option>
-        <option value="disponible">Disponible</option>
-        <option value="reservado">Reservado</option>
-        <option value="intercambiado">Intercambiado</option>
-      </select>
 
       <label htmlFor="exchange-sort">Ordenar publicaciones</label>
       <select
@@ -66,7 +52,6 @@ export default function ExchangeCatalog({ exchanges }) {
         type="button"
         onClick={() => {
           setSearch('')
-          setStatus('todos')
           setSort('recientes')
         }}
       >

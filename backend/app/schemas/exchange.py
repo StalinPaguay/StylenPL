@@ -1,4 +1,4 @@
-"""Esquemas de validación para publicaciones de intercambio."""
+"""Esquemas de validaciÃ³n para publicaciones de intercambio."""
 
 from datetime import datetime
 from typing import Literal
@@ -17,9 +17,14 @@ class ExchangeCreate(BaseModel):
 
 
 class ExchangeResponse(ExchangeCreate):
-    """Datos públicos de una publicación."""
+    """Datos pÃºblicos de una publicaciÃ³n."""
 
     id: str
     owner_id: str
     status: ExchangeStatus
     created_at: datetime
+
+class ExchangeStatusUpdate(BaseModel):
+    """Datos para actualizar el estado de una publicación."""
+
+    status: ExchangeStatus
