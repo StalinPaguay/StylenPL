@@ -11,6 +11,13 @@ export const clothingService = {
       body: JSON.stringify(data),
     }),
 
+  update: (token, clothingId, data) =>
+    apiRequest(`/clothing/${clothingId}`, {
+      method: 'PATCH',
+      token,
+      body: JSON.stringify(data),
+    }),
+
   remove: (token, clothingId) =>
     apiRequest(`/clothing/${clothingId}`, {
       method: 'DELETE',

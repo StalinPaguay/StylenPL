@@ -1,6 +1,27 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
+import ExchangeRequestForm from './ExchangeRequestForm'
 
-export default function ExchangeCatalog({ exchanges }) {
+function getExchangeStatusLabel(status) {
+  const labels = {
+    disponible: 'Disponible',
+    reservado: 'Reservado',
+    intercambiado: 'Intercambiado',
+    cancelado: 'Cancelado',
+  }
+
+  return labels[status] || status || 'Sin estado'
+}
+export default function ExchangeCatalog({ exchanges,
+  token,
+  myExchanges = [],
+  onRequestCreated, onRequestStart, onRefresh, sentRequests = [] }) {
+  const [selectedExchangeId, setSelectedExchangeId] = useState(null)
+  const ownExchangeIds = new Set(myExchanges.map((item) => item.id))
+  const pendingExchangeIds = new Set(
+    sentRequests
+      .filter((request) => request.status === 'pendiente')
+      .map((request) => request.exchange_id)
+  )
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recientes')
 
@@ -32,7 +53,7 @@ export default function ExchangeCatalog({ exchanges }) {
       <input
         id="exchange-search"
         type="search"
-        placeholder="Buscar por título o descripción"
+        placeholder="Buscar por tÃ­tulo o descripciÃ³n"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />
@@ -43,9 +64,9 @@ export default function ExchangeCatalog({ exchanges }) {
         value={sort}
         onChange={(event) => setSort(event.target.value)}
       >
-        <option value="recientes">Más recientes</option>
-        <option value="antiguos">Más antiguos</option>
-        <option value="titulo">Título A-Z</option>
+        <option value="recientes">MÃ¡s recientes</option>
+        <option value="antiguos">MÃ¡s antiguos</option>
+        <option value="titulo">TÃ­tulo A-Z</option>
       </select>
 
       <button
@@ -66,9 +87,62 @@ export default function ExchangeCatalog({ exchanges }) {
         <ul>
           {filteredExchanges.map((exchange) => (
             <li key={exchange.id}>
-              <strong>{exchange.title}</strong>
+              <strong>{exchange.title}
+<span
+  className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+    exchange.status === 'reservado'
+      ? 'bg-amber-100 text-amber-800'
+      : exchange.status === 'disponible'
+        ? 'bg-emerald-100 text-emerald-800'
+        : 'bg-stone-200 text-stone-700'
+  }`}
+>
+  {getExchangeStatusLabel(exchange.status)}
+</span></strong>
               <p>{exchange.description}</p>
               <small>Estado: {exchange.status}</small>
+
+              {pendingExchangeIds.has(exchange.id) && (
+                <p className="exchange-request-pending" role="status">
+                  Solicitud pendiente de respuesta
+                </p>
+              )}
+
+              {!ownExchangeIds.has(exchange.id) && token && !pendingExchangeIds.has(exchange.id) && exchange.status === 'disponible' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedExchangeId !== exchange.id) {
+                        onRequestStart?.()
+                      }
+                      setSelectedExchangeId((current) =>
+                        current === exchange.id ? null : exchange.id
+                      )
+                    }}
+                  >
+                    {selectedExchangeId === exchange.id
+                      ? 'Cerrar solicitud'
+                      : 'Solicitar intercambio'}
+                  </button>
+
+                  {selectedExchangeId === exchange.id && (
+                    <ExchangeRequestForm
+                      token={token}
+                      exchange={exchange}
+                      onCreated={(request) => {
+                        onRequestCreated?.(request)
+                        setSelectedExchangeId(null)
+                      }}
+                      onUnavailable={() => {
+                        Promise.resolve(onRefresh?.()).catch(() => {
+                          // ExchangePage ya muestra el error de actualización.
+                        })
+                      }}
+                    />
+                  )}
+                </>
+              )}
             </li>
           ))}
         </ul>
@@ -76,4 +150,3 @@ export default function ExchangeCatalog({ exchanges }) {
     </section>
   )
 }
-

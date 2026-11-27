@@ -1,4 +1,4 @@
-"""Controlador de autenticación de usuarios."""
+﻿"""Controlador de autenticación de usuarios."""
 
 from fastapi import HTTPException, status
 
@@ -35,5 +35,8 @@ class AuthController:
                 detail="Credenciales incorrectas",
             )
 
-        token = create_access_token(str(user["_id"]))
+        token = create_access_token(
+            str(user["_id"]),
+            token_version=user.get("token_version", 0),
+        )
         return {"access_token": token, "token_type": "bearer"}

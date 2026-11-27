@@ -24,47 +24,91 @@ export default function LoginPage({ onLogin, sessionMessage = '' }) {
   }
 
   return (
-    <main>
-      <h1>StyleInPL</h1>
-      <h2>Iniciar sesión</h2>
+    <main className="login-layout">
+      <section className="login-showcase">
+        <div className="login-showcase-top">
+          <span className="login-mark">✳</span>
+          <span>MODA CIRCULAR · ESTILO SIN LÍMITES</span>
+        </div>
 
-      {sessionMessage && <p role="status">{sessionMessage}</p>}
-      {error && <p role="alert">{error}</p>}
+        <div className="login-showcase-content">
+          <span className="login-eyebrow">TU ARMARIO, NUEVAS POSIBILIDADES</span>
+          <h2>Tu estilo evoluciona. Tu ropa también.</h2>
+          <p>
+            Organiza tus prendas, descubre nuevos estilos e intercambia
+            ropa en una comunidad para todos.
+          </p>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="login-email">Correo electrónico</label>
-        <input
-          id="login-email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
+          <div className="login-benefits">
+            <span>✦ Armario virtual</span>
+            <span>↔ Intercambios</span>
+            <span>♻ Moda sostenible</span>
+          </div>
+        </div>
 
-        <label htmlFor="login-password">Contraseña</label>
-        <input
-          id="login-password"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+        <div className="login-showcase-bottom">
+          STYLEINPL <span>— VISTE A TU MANERA</span>
+        </div>
+      </section>
 
-        <label className="password-toggle">
-          <input
-            type="checkbox"
-            checked={showPassword}
-            onChange={(event) => setShowPassword(event.target.checked)}
-          />
-          Mostrar contraseña
-        </label>
+      <section className="login-panel">
+        <div className="login-panel-inner">
+          <div className="login-brand">
+            <span className="login-brand-icon">✳</span>
+            <span>StyleInPL</span>
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Ingresando...' : 'Iniciar sesión'}
-        </button>
-      </form>
+          <div className="login-heading">
+            <span className="login-welcome">BIENVENIDO DE NUEVO</span>
+            <h1>Iniciar sesión</h1>
+            <p>Accede a tu armario y sigue descubriendo nuevas posibilidades.</p>
+          </div>
+
+          {sessionMessage && <p role="status">{sessionMessage}</p>}
+          {error && <p role="alert">{error}</p>}
+
+          <form className="login-form" onSubmit={handleSubmit}>
+            <label htmlFor="login-email">Correo electrónico</label>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="tu@correo.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+
+            <label htmlFor="login-password">Contraseña</label>
+            <input
+              id="login-password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Ingresa tu contraseña"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+
+            <label className="password-toggle">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(event) => setShowPassword(event.target.checked)}
+              />
+              Mostrar contraseña
+            </label>
+
+            <button className="login-submit" type="submit" disabled={loading}>
+              {loading ? 'Ingresando...' : 'Entrar a mi armario →'}
+            </button>
+          </form>
+
+          <p className="login-footer-note">
+            Dale una segunda vida a tus prendas.
+          </p>
+        </div>
+      </section>
     </main>
   )
 }
-
-

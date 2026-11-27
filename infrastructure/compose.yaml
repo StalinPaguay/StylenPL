@@ -1,24 +1,36 @@
-services:
+﻿services:
   mongodb:
     image: mongo:7
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     restart: unless-stopped
     volumes:
       - mongodb_data:/data/db
     networks:
       - stylenpl_network
 
+  mongodb-init:
+    image: mongo:7
+    restart: "no"
+    depends_on:
+      - mongodb
+    volumes:
+      - ./scripts/init-replica.sh:/init-replica.sh:ro
+    entrypoint: ["/bin/sh", "/init-replica.sh"]
+    networks:
+      - stylenpl_network
   backend:
     build:
       context: ..
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/
+      MONGODB_URI: mongodb://mongodb:27017/?replicaSet=rs0
       MONGODB_DATABASE: stylenpl
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
-      - mongodb
+      mongodb-init:
+        condition: service_completed_successfully
     networks:
       - stylenpl_network
 

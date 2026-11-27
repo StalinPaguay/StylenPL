@@ -1,4 +1,4 @@
-"""Configuración de autenticación JWT."""
+﻿"""Configuración de autenticación JWT."""
 
 import os
 from datetime import datetime, timedelta, timezone
@@ -10,7 +10,7 @@ JWT_ALGORITHM = "HS256"
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-def create_access_token(user_id: str) -> str:
+def create_access_token(user_id: str, token_version: int = 0) -> str:
     """Generar un token de acceso con vencimiento."""
     if not JWT_SECRET_KEY:
         raise RuntimeError("Configura JWT_SECRET_KEY en las variables de entorno")
@@ -18,7 +18,7 @@ def create_access_token(user_id: str) -> str:
     expires = datetime.now(timezone.utc) + timedelta(
         minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES
     )
-    payload = {"sub": user_id, "exp": expires}
+    payload = {"sub": user_id, "exp": expires, "token_version": token_version}
 
     return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
@@ -34,4 +34,9 @@ def decode_access_token(token: str) -> str:
         algorithms=[JWT_ALGORITHM],
         options={"require": ["sub", "exp"]},
     )
-    return payload["sub"]
+    token_version = payload.get("token_version", 0)
+
+    if type(token_version) is not int or token_version < 0:
+        raise jwt.InvalidTokenError("Versión de seguridad inválida")
+
+    return payload["sub"], token_version

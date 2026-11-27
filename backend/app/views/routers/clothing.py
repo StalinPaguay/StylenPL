@@ -1,10 +1,10 @@
-"""Rutas protegidas del armario virtual."""
+﻿"""Rutas protegidas del armario virtual."""
 
 from fastapi import APIRouter, Depends, Response, status
 
 from backend.app.controllers.clothing_controller import ClothingController
 from backend.app.core.dependencies import get_current_user_id
-from backend.app.schemas.clothing import ClothingCreate, ClothingResponse
+from backend.app.schemas.clothing import ClothingCreate, ClothingResponse, ClothingUpdate
 
 router = APIRouter(prefix="/clothing", tags=["Armario virtual"])
 
@@ -45,3 +45,16 @@ async def delete_clothing(
     """Eliminar una prenda del usuario."""
     await ClothingController().delete(clothing_id, owner_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.patch("/{clothing_id}", response_model=ClothingResponse)
+async def update_clothing(
+    clothing_id: str,
+    data: ClothingUpdate,
+    owner_id: str = Depends(get_current_user_id),
+):
+    """Editar una prenda del usuario autenticado."""
+    return await ClothingController().update(
+        clothing_id,
+        owner_id,
+        data,
+    )

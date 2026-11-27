@@ -39,3 +39,21 @@ class ClothingRepository:
             {"_id": ObjectId(clothing_id), "owner_id": owner_id}
         )
         return result.deleted_count == 1
+
+    async def update(self, clothing_id: str, owner_id: str, changes: dict):
+        """Actualizar una prenda únicamente si pertenece al usuario."""
+        if not ObjectId.is_valid(clothing_id):
+            return None
+
+        query = {
+            "_id": ObjectId(clothing_id),
+            "owner_id": owner_id,
+        }
+
+        if changes:
+            await self.collection.update_one(
+                query,
+                {"$set": changes},
+            )
+
+        return await self.collection.find_one(query)

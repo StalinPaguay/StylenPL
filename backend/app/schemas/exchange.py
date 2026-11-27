@@ -28,3 +28,9 @@ class ExchangeStatusUpdate(BaseModel):
     """Datos para actualizar el estado de una publicación."""
 
     status: ExchangeStatus
+
+class ExchangeUpdate(BaseModel):
+    """Datos permitidos para editar una publicación existente."""
+
+    title: str | None = Field(default=None, min_length=5, max_length=120)
+    description: str | None = Field(default=None, min_length=10, max_length=500)

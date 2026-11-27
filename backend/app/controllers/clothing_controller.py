@@ -1,8 +1,8 @@
-"""Controlador del armario virtual."""
+﻿"""Controlador del armario virtual."""
 
 from fastapi import HTTPException, status
 
-from backend.app.schemas.clothing import ClothingCreate, ClothingResponse
+from backend.app.schemas.clothing import ClothingCreate, ClothingResponse, ClothingUpdate
 from backend.app.services.clothing_service import ClothingService
 
 
@@ -43,3 +43,30 @@ class ClothingController:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Prenda no encontrada",
             )
+
+    async def update(
+        self,
+        clothing_id: str,
+        owner_id: str,
+        data: ClothingUpdate,
+    ) -> ClothingResponse:
+        """Actualizar una prenda del usuario autenticado."""
+        try:
+            clothing = await self.service.update(
+                clothing_id,
+                owner_id,
+                data,
+            )
+        except ValueError as error:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=str(error),
+            ) from error
+
+        if clothing is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Prenda no encontrada",
+            )
+
+        return ClothingResponse(**clothing)

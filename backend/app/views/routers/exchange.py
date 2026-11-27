@@ -62,3 +62,16 @@ async def update_exchange_status(
     return await ExchangeController().update_status(
         exchange_id, owner_id, data.status
     )
+from backend.app.schemas.exchange import ExchangeUpdate
+
+
+@router.patch("/{exchange_id}", response_model=ExchangeResponse)
+async def update_exchange(
+    exchange_id: str,
+    data: ExchangeUpdate,
+    owner_id: str = Depends(get_current_user_id),
+):
+    """Editar el título y la descripción de una publicación propia."""
+    return await ExchangeController().update(
+        exchange_id, owner_id, data
+    )

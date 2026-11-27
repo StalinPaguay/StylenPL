@@ -47,83 +47,132 @@ export default function RegisterPage({ onBack }) {
   }
 
   return (
-    <main>
-      <h1>StyleInPL</h1>
-      <h2>Crear cuenta</h2>
+    <main className="login-layout register-layout">
+      <section className="login-showcase">
+        <div className="login-showcase-top">
+          <span className="login-mark">✳</span>
+          <span>MODA CIRCULAR · ESTILO SIN LÍMITES</span>
+        </div>
 
-      {error && <p role="alert">{error}</p>}
-      {success && <p role="status">{success}</p>}
+        <div className="login-showcase-content">
+          <span className="login-eyebrow">BIENVENIDO A STYLEINPL</span>
+          <h2>Tu ropa tiene más historias por vivir.</h2>
+          <p>
+            Crea tu armario virtual, organiza tus prendas y descubre
+            nuevas posibilidades de intercambio para todos los estilos.
+          </p>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="register-name">Nombre completo</label>
-        <input
-          id="register-name"
-          name="name"
-          type="text"
-          autoComplete="name"
-          minLength={2}
-          maxLength={100}
-          value={form.name}
-          onChange={handleChange}
-          required
-        />
+          <div className="login-benefits">
+            <span>✦ Organiza tu ropa</span>
+            <span>↔ Intercambia prendas</span>
+            <span>♻ Moda responsable</span>
+          </div>
+        </div>
 
-        <label htmlFor="register-email">Correo electrónico</label>
-        <input
-          id="register-email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+        <div className="login-showcase-bottom">
+          STYLEINPL <span>— TU ESTILO, TUS REGLAS</span>
+        </div>
+      </section>
 
-        <label htmlFor="register-password">Contraseña</label>
-        <input
-          id="register-password"
-          name="password"
-          type={showPassword ? "text" : "password"}
-          autoComplete="new-password"
-          minLength={8}
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+      <section className="login-panel">
+        <div className="login-panel-inner">
+          <div className="login-brand">
+            <span className="login-brand-icon">✳</span>
+            <span>StyleInPL</span>
+          </div>
 
-        <label htmlFor="register-confirm-password">
-          Confirmar contraseña
-        </label>
-        <input
-          id="register-confirm-password"
-          name="confirmPassword"
-          type={showPassword ? "text" : "password"}
-          autoComplete="new-password"
-          minLength={8}
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
-        />
+          <div className="login-heading register-heading">
+            <span className="login-welcome">ÚNETE A NUESTRA COMUNIDAD</span>
+            <h1>Crear cuenta</h1>
+            <p>Empieza a construir tu armario digital.</p>
+          </div>
 
-        <label className="password-toggle">
-          <input
-            type="checkbox"
-            checked={showPassword}
-            onChange={(event) => setShowPassword(event.target.checked)}
-          />
-          Mostrar contraseñas
-        </label>
+          {error && <p role="alert">{error}</p>}
+          {success && <p role="status">{success}</p>}
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registrando...' : 'Crear cuenta'}
-        </button>
-      </form>
+          <form className="login-form" onSubmit={handleSubmit}>
+            <label htmlFor="register-name">Nombre completo</label>
+            <input
+              id="register-name"
+              name="name"
+              type="text"
+              placeholder="Tu nombre completo"
+              autoComplete="name"
+              minLength={2}
+              maxLength={100}
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
 
-      <button type="button" onClick={onBack}>
-        Volver a iniciar sesión
-      </button>
+            <label htmlFor="register-email">Correo electrónico</label>
+            <input
+              id="register-email"
+              name="email"
+              type="email"
+              placeholder="tu@correo.com"
+              autoComplete="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+
+            <label htmlFor="register-password">Contraseña</label>
+            <input
+              id="register-password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Mínimo 8 caracteres"
+              autoComplete="new-password"
+              minLength={8}
+              maxLength={128}
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+
+            <label htmlFor="register-confirm-password">
+              Confirmar contraseña
+            </label>
+            <input
+              id="register-confirm-password"
+              name="confirmPassword"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Repite tu contraseña"
+              autoComplete="new-password"
+              minLength={8}
+              maxLength={128}
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+
+            <label className="password-toggle">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(event) => setShowPassword(event.target.checked)}
+              />
+              Mostrar contraseñas
+            </label>
+
+            <button className="login-submit" type="submit" disabled={loading}>
+              {loading ? 'Creando cuenta...' : 'Crear mi cuenta →'}
+            </button>
+          </form>
+
+          <div className="register-bottom">
+            <p>¿Ya tienes una cuenta?</p>
+            <button
+              className="register-back"
+              type="button"
+              onClick={onBack}
+            >
+              Iniciar sesión
+            </button>
+          </div>
+        </div>
+      </section>
     </main>
   )
 }
-
-

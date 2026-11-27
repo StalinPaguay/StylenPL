@@ -342,3 +342,869 @@ form button {
   opacity: 0.6;
   cursor: not-allowed;
 }
+.login-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(1100px, calc(100% - 48px));
+  min-height: 680px;
+  margin: 5vh auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e3e5df;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(32, 45, 38, 0.10);
+}
+
+.login-showcase {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 680px;
+  margin: 0;
+  padding: 42px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(213, 221, 196, 0.23), transparent 32%),
+    radial-gradient(circle at 20% 80%, rgba(215, 186, 145, 0.18), transparent 40%),
+    linear-gradient(145deg, #263a32, #516a5c);
+}
+
+.login-showcase-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.login-mark {
+  font-size: 32px;
+}
+
+.login-showcase-content {
+  max-width: 430px;
+}
+
+.login-eyebrow,
+.login-welcome {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.login-showcase h2 {
+  margin: 22px 0;
+  color: #fff;
+  font-size: clamp(38px, 4vw, 58px);
+  line-height: 1.12;
+  letter-spacing: -2px;
+}
+
+.login-showcase-content p {
+  max-width: 380px;
+  color: #e5ebe5;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.login-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.login-benefits span {
+  padding: 10px 13px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 30px;
+  background: rgba(255,255,255,0.09);
+  font-size: 12px;
+}
+
+.login-showcase-bottom {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.login-showcase-bottom span {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.login-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 54px;
+}
+
+.login-panel-inner {
+  width: 100%;
+  max-width: 390px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #293d34;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.login-brand-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 13px;
+  background: #e5eee7;
+  font-size: 26px;
+}
+
+.login-heading {
+  margin: 55px 0 30px;
+}
+
+.login-welcome {
+  color: #72877a;
+}
+
+.login-heading h1 {
+  margin: 12px 0;
+  color: #202b25;
+  font-size: 39px;
+  letter-spacing: -1.5px;
+}
+
+.login-heading p {
+  color: #758078;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.login-form {
+  gap: 12px;
+}
+
+.login-form label:not(.password-toggle) {
+  margin-top: 8px;
+  color: #344239;
+  font-size: 13px;
+}
+
+.login-form input:not([type="checkbox"]) {
+  min-height: 50px;
+  border: 1px solid #dce2dc;
+  background: #fbfcfa;
+}
+
+.login-form input:focus {
+  border-color: #819488;
+}
+
+.login-submit {
+  min-height: 52px;
+  margin-top: 20px;
+  background: #344f40;
+}
+
+.login-submit:hover {
+  background: #263d30;
+}
+
+.login-footer-note {
+  margin-top: 35px;
+  color: #8b968d;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    width: min(520px, calc(100% - 24px));
+    margin: 20px auto;
+  }
+
+  .login-showcase {
+    min-height: 270px;
+    padding: 28px;
+  }
+
+  .login-showcase-content h2 {
+    font-size: 35px;
+  }
+
+  .login-showcase-content p {
+    font-size: 14px;
+  }
+
+  .login-showcase-bottom,
+  .login-benefits {
+    display: none;
+  }
+
+  .login-panel {
+    padding: 32px 24px;
+  }
+
+  .login-heading {
+    margin: 32px 0 24px;
+  }
+}
+.wardrobe-dashboard {
+  width: min(1440px, calc(100% - 48px));
+  max-width: none;
+  margin: 24px auto 90px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.wardrobe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 30px;
+  border: 1px solid #e3e6df;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.wardrobe-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wardrobe-brand-symbol {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 14px;
+  background: #e6eee7;
+  color: #344f40;
+  font-size: 30px;
+}
+
+.wardrobe-brand strong {
+  display: block;
+  color: #293d34;
+  font-size: 27px;
+}
+
+.wardrobe-brand small {
+  display: block;
+  margin-top: 3px;
+  color: #7a8b7f;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.wardrobe-logout {
+  margin: 0;
+  background: #eef2ee;
+  color: #344f40;
+}
+
+.wardrobe-logout:hover {
+  background: #dce8dd;
+}
+
+.wardrobe-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-height: 260px;
+  margin-top: 24px;
+  padding: clamp(30px, 5vw, 60px);
+  border-radius: 22px;
+  background: linear-gradient(120deg, #2d4438, #587364);
+  color: #fff;
+  overflow: hidden;
+}
+
+.wardrobe-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #d3e1d4;
+}
+
+.wardrobe-hero h1 {
+  margin: 14px 0;
+  color: #fff;
+  font-size: clamp(36px, 5vw, 62px);
+  letter-spacing: -2px;
+}
+
+.wardrobe-hero p {
+  max-width: 580px;
+  color: #e3ebe4;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.wardrobe-hero-decoration {
+  color: rgba(255,255,255,0.12);
+  font-size: clamp(120px, 20vw, 260px);
+  line-height: 1;
+}
+
+.wardrobe-summary > section {
+  margin-top: 26px;
+}
+
+.wardrobe-summary .exchange-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.wardrobe-summary .exchange-stat {
+  padding: 25px;
+  background: #fff;
+  border-color: #e2e6df;
+  text-align: left;
+}
+
+.wardrobe-summary .exchange-stat strong {
+  font-size: 36px;
+}
+
+.wardrobe-content {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.65fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 26px;
+}
+
+.wardrobe-form-card,
+.wardrobe-list-card {
+  min-width: 0;
+  margin: 0;
+  padding: 30px;
+  border: 1px solid #e2e6df;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.wardrobe-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.wardrobe-card-heading > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 12px;
+  background: #e8efe8;
+  color: #405a48;
+  font-weight: 800;
+}
+
+.wardrobe-card-heading h2 {
+  margin: 0 0 5px;
+  font-size: 23px;
+}
+
+.wardrobe-card-heading p {
+  margin: 0;
+  color: #7a857d;
+  font-size: 13px;
+}
+
+.wardrobe-form-card form h2,
+.wardrobe-list-card > section > h2 {
+  display: none;
+}
+
+.wardrobe-form-card form {
+  gap: 12px;
+}
+
+.wardrobe-form-card form button {
+  min-height: 48px;
+}
+
+.wardrobe-list-card > section {
+  margin-top: 0;
+}
+
+.wardrobe-list-card ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.wardrobe-list-card li {
+  margin: 0;
+  padding: 20px;
+  background: #f9faf7;
+}
+
+.wardrobe-list-card li strong {
+  display: block;
+  color: #2d4438;
+  font-size: 18px;
+}
+
+.wardrobe-list-card li button {
+  width: 100%;
+  background: #e7ebe6;
+  color: #344f40;
+}
+
+.wardrobe-list-card li button:hover {
+  background: #d5e0d6;
+}
+
+.wardrobe-empty {
+  padding: 60px 20px;
+  border: 1px dashed #cdd9cf;
+  border-radius: 16px;
+  background: #fafcf9;
+  text-align: center;
+}
+
+.wardrobe-empty > span {
+  color: #819488;
+  font-size: 60px;
+}
+
+.wardrobe-empty h3 {
+  margin: 8px 0;
+  color: #344f40;
+}
+
+.wardrobe-empty p {
+  color: #7b877e;
+}
+
+@media (max-width: 900px) {
+  .wardrobe-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .wardrobe-dashboard {
+    width: calc(100% - 24px);
+  }
+
+  .wardrobe-header {
+    padding: 16px;
+  }
+
+  .wardrobe-brand strong {
+    font-size: 20px;
+  }
+
+  .wardrobe-brand small {
+    font-size: 8px;
+  }
+
+  .wardrobe-hero {
+    padding: 28px;
+  }
+
+  .wardrobe-hero-decoration {
+    display: none;
+  }
+
+  .wardrobe-summary .exchange-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .wardrobe-form-card,
+  .wardrobe-list-card {
+    padding: 20px;
+  }
+}
+.exchange-dashboard {
+  width: min(1440px, calc(100% - 48px));
+  max-width: none;
+  margin: 24px auto 90px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.exchange-dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 30px;
+  border: 1px solid #e3e6df;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.exchange-back {
+  margin: 0;
+  background: #edf2ee;
+  color: #344f40;
+}
+
+.exchange-back:hover {
+  background: #dce8dd;
+}
+
+.exchange-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-height: 240px;
+  margin-top: 24px;
+  padding: clamp(30px, 5vw, 60px);
+  border-radius: 22px;
+  background: linear-gradient(120deg, #344b3e, #819488);
+  color: #fff;
+  overflow: hidden;
+}
+
+.exchange-hero h1 {
+  max-width: 740px;
+  margin: 14px 0;
+  color: #fff;
+  font-size: clamp(34px, 5vw, 58px);
+  letter-spacing: -2px;
+}
+
+.exchange-hero p {
+  max-width: 580px;
+  color: #ecf1eb;
+  line-height: 1.7;
+}
+
+.exchange-hero-icon {
+  color: rgba(255,255,255,0.17);
+  font-size: clamp(120px, 20vw, 240px);
+  line-height: 1;
+}
+
+.exchange-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 32px 0 20px;
+}
+
+.exchange-toolbar h2 {
+  margin: 0 0 6px;
+}
+
+.exchange-toolbar p {
+  margin: 0;
+  color: #758078;
+}
+
+.exchange-toolbar button {
+  margin: 0;
+}
+
+.exchange-summary .exchange-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.exchange-summary .exchange-stat {
+  padding: 24px;
+  background: #fff;
+  border-color: #e2e6df;
+  text-align: left;
+}
+
+.exchange-management-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.4fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 26px;
+}
+
+.exchange-panel,
+.exchange-catalog-panel {
+  min-width: 0;
+  margin: 0;
+  padding: 30px;
+  border: 1px solid #e2e6df;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.exchange-catalog-panel {
+  margin-top: 24px;
+}
+
+.exchange-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.exchange-panel-heading > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 12px;
+  background: #e8efe8;
+  color: #405a48;
+  font-weight: 800;
+}
+
+.exchange-panel-heading h2 {
+  margin: 0 0 5px;
+  font-size: 23px;
+}
+
+.exchange-panel-heading p {
+  margin: 0;
+  color: #7a857d;
+  font-size: 13px;
+}
+
+.exchange-panel > section,
+.exchange-catalog-panel > section {
+  margin-top: 0;
+}
+
+.exchange-panel > section > h2,
+.exchange-catalog-panel > section > h2 {
+  display: none;
+}
+
+.exchange-panel ul,
+.exchange-catalog-panel ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.exchange-panel li,
+.exchange-catalog-panel li {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #e1e7df;
+  border-radius: 14px;
+  background: #f9faf7;
+}
+
+.exchange-panel li strong,
+.exchange-catalog-panel li strong {
+  color: #344f40;
+  font-size: 18px;
+}
+
+.exchange-panel li p,
+.exchange-catalog-panel li p {
+  color: #5e6b61;
+  line-height: 1.6;
+}
+
+.exchange-panel li button {
+  width: 100%;
+  background: #e8ece7;
+  color: #344f40;
+}
+
+.exchange-panel li button:hover {
+  background: #d8e3d9;
+}
+
+@media (max-width: 900px) {
+  .exchange-management-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .exchange-dashboard {
+    width: calc(100% - 24px);
+  }
+
+  .exchange-dashboard-header {
+    padding: 16px;
+  }
+
+  .exchange-hero {
+    padding: 28px;
+  }
+
+  .exchange-hero-icon {
+    display: none;
+  }
+
+  .exchange-summary .exchange-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .exchange-panel,
+  .exchange-catalog-panel {
+    padding: 20px;
+  }
+}
+.register-layout {
+  min-height: 780px;
+}
+
+.register-layout .login-showcase {
+  min-height: 780px;
+}
+
+.register-layout .login-panel {
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+
+.register-heading {
+  margin-top: 30px;
+  margin-bottom: 18px;
+}
+
+.register-heading h1 {
+  font-size: 35px;
+}
+
+.register-layout .login-form {
+  gap: 9px;
+}
+
+.register-layout .login-form input:not([type="checkbox"]) {
+  min-height: 46px;
+}
+
+.register-layout .login-submit {
+  margin-top: 12px;
+}
+
+.register-bottom {
+  margin-top: 22px;
+  text-align: center;
+}
+
+.register-bottom p {
+  margin: 0;
+  color: #758078;
+  font-size: 13px;
+}
+
+.register-back {
+  margin-top: 8px;
+  padding: 9px 18px;
+  background: transparent;
+  color: #344f40;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.register-back:hover {
+  background: #edf2ee;
+}
+
+@media (max-width: 800px) {
+  .register-layout,
+  .register-layout .login-showcase {
+    min-height: 0;
+  }
+}
+.app-navigation {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #e3e8e1;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.app-navigation-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: min(1440px, calc(100% - 48px));
+  min-height: 76px;
+  margin: 0 auto;
+}
+
+.app-navigation-brand {
+  color: #344f40;
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.app-navigation-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-navigation-links button {
+  margin: 0;
+  padding: 11px 18px;
+  background: transparent;
+  color: #53675a;
+}
+
+.app-navigation-links button:hover {
+  background: #edf2ee;
+}
+
+.app-navigation-links .app-nav-active {
+  background: #344f40;
+  color: #fff;
+}
+
+.app-navigation-links .app-nav-active:hover {
+  background: #263d30;
+}
+
+@media (max-width: 600px) {
+  .app-navigation-inner {
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    width: calc(100% - 24px);
+    padding: 14px 0;
+  }
+
+  .app-navigation-brand {
+    font-size: 20px;
+  }
+
+  .app-navigation-links {
+    width: 100%;
+  }
+
+  .app-navigation-links button {
+    flex: 1;
+    padding: 11px;
+    font-size: 14px;
+  }
+}

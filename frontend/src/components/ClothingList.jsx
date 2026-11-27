@@ -2,7 +2,7 @@
 import { clothingService } from '../services/clothingService'
 import FeedbackMessage from './FeedbackMessage'
 
-export default function ClothingList({ token, clothes, onDeleted }) {
+export default function ClothingList({ token, clothes, onDeleted, onEdit }) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('todas')
   const [sort, setSort] = useState('nombre')
@@ -108,6 +108,14 @@ export default function ClothingList({ token, clothes, onDeleted }) {
               <button
                 type="button"
                 disabled={deletingId !== null}
+                onClick={() => onEdit(clothing)}
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                disabled={deletingId !== null}
                 onClick={() => handleDelete(clothing.id)}
               >
                 {deletingId === clothing.id ? 'Eliminando...' : 'Eliminar'}
@@ -119,5 +127,3 @@ export default function ClothingList({ token, clothes, onDeleted }) {
     </section>
   )
 }
-
-

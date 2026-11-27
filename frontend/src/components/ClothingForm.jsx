@@ -9,8 +9,14 @@ const initialForm = {
   description: '',
 }
 
-export default function ClothingForm({ token, onCreated }) {
-  const [form, setForm] = useState(initialForm)
+export default function ClothingForm(props) {
+  const { editingClothing } = props
+  const formKey = editingClothing?.id ?? 'new'
+  return <ClothingFormFields key={formKey} {...props} />
+}
+
+function ClothingFormFields({ token, onCreated, editingClothing, onUpdated, onCancelEdit }) {
+  const [form, setForm] = useState(() => editingClothing ? { name: editingClothing.name, category: editingClothing.category, color: editingClothing.color, size: editingClothing.size, description: editingClothing.description ?? "" } : { ...initialForm })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -20,9 +26,14 @@ export default function ClothingForm({ token, onCreated }) {
     setLoading(true)
 
     try {
-      const clothing = await clothingService.create(token, form)
-      onCreated(clothing)
-      setForm(initialForm)
+      if (editingClothing) {
+        const clothing = await clothingService.update(token, editingClothing.id, form)
+        onUpdated(clothing)
+      } else {
+        const clothing = await clothingService.create(token, form)
+        onCreated(clothing)
+        setForm(initialForm)
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -39,7 +50,7 @@ export default function ClothingForm({ token, onCreated }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Agregar prenda</h2>
+      <h2>{editingClothing ? 'Editar prenda' : 'Agregar prenda'}</h2>
 
       <label htmlFor="name">Nombre</label>
       <input id="name" name="name" value={form.name} onChange={handleChange} required />
@@ -67,8 +78,17 @@ export default function ClothingForm({ token, onCreated }) {
       {error && <p role="alert">{error}</p>}
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Guardando...' : 'Guardar prenda'}
+        {loading ? 'Guardando...' : editingClothing ? 'Guardar cambios' : 'Guardar prenda'}
       </button>
+      {editingClothing && (
+        <button
+          type="button"
+          disabled={loading}
+          onClick={onCancelEdit}
+        >
+          Cancelar edición
+        </button>
+      )}
     </form>
   )
 }

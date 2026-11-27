@@ -48,3 +48,20 @@ class ClothingService:
     async def delete(self, clothing_id: str, owner_id: str):
         """Eliminar una prenda únicamente si pertenece al usuario."""
         return await self.repository.delete(clothing_id, owner_id)
+
+    async def update(self, clothing_id: str, owner_id: str, data):
+        """Editar una prenda perteneciente al usuario autenticado."""
+        changes = data.model_dump(exclude_unset=True)
+
+        # Los campos obligatorios no pueden quedar en null.
+        required_fields = {"name", "category", "color", "size"}
+        if any(changes.get(field) is None for field in required_fields & changes.keys()):
+            raise ValueError("Los campos obligatorios no pueden ser nulos")
+
+        clothing = await self.repository.update(
+            clothing_id,
+            owner_id,
+            changes,
+        )
+
+        return self.serialize(clothing) if clothing else None

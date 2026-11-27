@@ -1,8 +1,27 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import FeedbackMessage from './FeedbackMessage'
-import { exchangeService } from '../services/exchangeService'
+import { exchangeService, exchangeEditService } from '../services/exchangeService'
 
-export default function ExchangeForm({ token, clothes, myExchanges = [], onCreated }) {
+export default function ExchangeForm(props) {
+  const { editingExchange } = props
+
+  return (
+    <ExchangeFormFields
+      key={editingExchange?.id ?? 'new'}
+      {...props}
+    />
+  )
+}
+
+function ExchangeFormFields({
+  token,
+  clothes,
+  myExchanges = [],
+  onCreated,
+  onUpdated,
+  editingExchange,
+  onCancelEdit,
+}) {
   const publishedClothingIds = new Set(
     myExchanges
       .filter((exchange) =>
@@ -12,14 +31,16 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
   )
 
   const availableClothes = clothes.filter(
-    (clothing) => !publishedClothingIds.has(clothing.id)
+    (clothing) =>
+      clothing.id === editingExchange?.clothing_id ||
+      !publishedClothingIds.has(clothing.id)
   )
 
-  const [form, setForm] = useState({
-    clothing_id: '',
-    title: '',
-    description: '',
-  })
+  const [form, setForm] = useState(() => ({
+    clothing_id: editingExchange?.clothing_id ?? '',
+    title: editingExchange?.title ?? '',
+    description: editingExchange?.description ?? '',
+  }))
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
@@ -38,28 +59,39 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
     }
 
     if (title.length < 5) {
-      setError('El tÃ­tulo debe tener al menos 5 caracteres.')
+      setError('El tÃƒÂ­tulo debe tener al menos 5 caracteres.')
       return
     }
 
     if (title.length > 120) {
-      setError('El tÃ­tulo no puede superar los 120 caracteres.')
+      setError('El tÃƒÂ­tulo no puede superar los 120 caracteres.')
       return
     }
 
     if (description.length < 10) {
-      setError('La descripciÃ³n debe tener al menos 10 caracteres.')
+      setError('La descripciÃƒÂ³n debe tener al menos 10 caracteres.')
       return
     }
 
     if (description.length > 500) {
-      setError('La descripciÃ³n no puede superar los 500 caracteres.')
+      setError('La descripciÃƒÂ³n no puede superar los 500 caracteres.')
       return
     }
 
     setLoading(true)
 
     try {
+      if (editingExchange) {
+        const updated = await exchangeEditService.update(
+          token,
+          editingExchange.id,
+          { title, description }
+        )
+        onUpdated(updated)
+        onCancelEdit()
+        return
+      }
+
       const exchange = await exchangeService.create(token, { ...form, title, description })
       onCreated(exchange)
       setForm({ clothing_id: '', title: '', description: '' })
@@ -78,7 +110,7 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
 
   return (
     <section>
-      <h2>Publicar intercambio</h2>
+      <h2>{editingExchange ? 'Editar intercambio' : 'Publicar intercambio'}</h2>
 
       <FeedbackMessage type="error" message={error} />
       <FeedbackMessage type="success" message={success} />
@@ -90,6 +122,7 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
           name="clothing_id"
           value={form.clothing_id}
           onChange={handleChange}
+          disabled={Boolean(editingExchange)}
           required
         >
           <option value="">Selecciona una prenda</option>
@@ -100,7 +133,7 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
           ))}
         </select>
 
-        <label htmlFor="exchange-title">TÃ­tulo</label>
+        <label htmlFor="exchange-title">TÃƒÂ­tulo</label>
         <input
           id="exchange-title"
           name="title"
@@ -112,7 +145,7 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
         />
         <small>{form.title.length}/120 caracteres</small>
 
-        <label htmlFor="exchange-description">DescripciÃ³n</label>
+        <label htmlFor="exchange-description">DescripciÃƒÂ³n</label>
         <textarea
           id="exchange-description"
           name="description"
@@ -124,9 +157,18 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
         />
         <small>{form.description.length}/500 caracteres</small>
 
-        <button type="submit" disabled={loading || availableClothes.length === 0}>
-          {loading ? 'Publicando...' : 'Publicar intercambio'}
+        <button type="submit" disabled={loading || (!editingExchange && availableClothes.length === 0)}>
+          {loading ? 'Guardando...' : editingExchange ? 'Guardar cambios' : 'Publicar intercambio'}
         </button>
+        {editingExchange && (
+          <button
+            type="button"
+            onClick={onCancelEdit}
+            disabled={loading}
+          >
+            Cancelar edición
+          </button>
+        )}
       </form>
 
       {clothes.length === 0 && (
@@ -138,6 +180,3 @@ export default function ExchangeForm({ token, clothes, myExchanges = [], onCreat
     </section>
   )
 }
-
-
-

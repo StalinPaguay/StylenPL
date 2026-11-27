@@ -1,4 +1,4 @@
-"""Pruebas unitarias del servicio de intercambios."""
+﻿"""Pruebas unitarias del servicio de intercambios."""
 
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock
@@ -83,13 +83,55 @@ async def test_list_available_exchanges(service):
 
 
 @pytest.mark.asyncio
-async def test_delete_own_exchange(service):
+async def test_delete_own_exchange(service, monkeypatch):
+    from unittest.mock import MagicMock
+
+    from backend.app.database import mongodb
+    from backend.app.repositories.exchange_request_repository import (
+        ExchangeRequestRepository,
+    )
+
+    exchange_id = str(ObjectId())
+    owner_id = str(ObjectId())
+
+    service.repository.find_by_id.return_value = {
+        "_id": ObjectId(exchange_id),
+        "owner_id": owner_id,
+        "status": "disponible",
+    }
     service.repository.delete.return_value = True
 
-    result = await service.delete(str(ObjectId()), str(ObjectId()))
+    session = MagicMock()
+    session.__aenter__ = AsyncMock(return_value=session)
+    session.__aexit__ = AsyncMock(return_value=False)
+
+    transaction = MagicMock()
+    transaction.__aenter__ = AsyncMock(return_value=transaction)
+    transaction.__aexit__ = AsyncMock(return_value=False)
+    session.start_transaction.return_value = transaction
+
+    client = MagicMock()
+    client.start_session = AsyncMock(return_value=session)
+
+    request_repository = MagicMock()
+    request_repository.reject_pending_by_exchange = AsyncMock()
+
+    monkeypatch.setattr(mongodb, "client", client)
+    monkeypatch.setattr(
+        ExchangeRequestRepository,
+        "reject_pending_by_exchange",
+        request_repository.reject_pending_by_exchange,
+    )
+
+    result = await service.delete(exchange_id, owner_id)
 
     assert result is True
-    service.repository.delete.assert_awaited_once()
+    service.repository.delete.assert_awaited_once_with(
+        exchange_id, owner_id, session=session
+    )
+    request_repository.reject_pending_by_exchange.assert_awaited_once_with(
+        exchange_id, session=session
+    )
 
 
 @pytest.mark.asyncio
@@ -126,7 +168,7 @@ async def test_update_exchange_status(service):
     owner_id = str(ObjectId())
     clothing_id = str(ObjectId())
 
-    service.repository.update_status.return_value = {
+    reserved_exchange = {
         "_id": ObjectId(exchange_id),
         "owner_id": owner_id,
         "clothing_id": clothing_id,
@@ -136,67 +178,73 @@ async def test_update_exchange_status(service):
         "created_at": datetime.now(timezone.utc),
     }
 
+    service.repository.find_by_id.return_value = reserved_exchange
+    service.repository.complete_if_reserved.return_value = {
+        **reserved_exchange,
+        "status": "intercambiado",
+    }
+
     result = await service.update_status(
-        exchange_id, owner_id, "reservado"
+        exchange_id, owner_id, "intercambiado"
     )
 
     assert result["id"] == exchange_id
-    assert result["status"] == "reservado"
+    assert result["status"] == "intercambiado"
 
-    service.repository.update_status.assert_awaited_once_with(
-        exchange_id, owner_id, "reservado"
+    service.repository.complete_if_reserved.assert_awaited_once_with(
+        exchange_id, owner_id
     )
-
 
 @pytest.mark.asyncio
 async def test_update_status_of_nonexistent_exchange(service):
     exchange_id = str(ObjectId())
     owner_id = str(ObjectId())
 
-    service.repository.update_status.return_value = None
+    service.repository.find_by_id.return_value = None
 
     result = await service.update_status(
-        exchange_id, owner_id, "reservado"
+        exchange_id, owner_id, "intercambiado"
     )
 
     assert result is None
-
-    service.repository.update_status.assert_awaited_once_with(
-        exchange_id, owner_id, "reservado"
-    )
+    service.repository.find_by_id.assert_awaited_once_with(exchange_id)
+    service.repository.complete_if_reserved.assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_update_status_propagates_duplicate_conflict(service):
+async def test_update_status_rejects_invalid_transition(service):
     exchange_id = str(ObjectId())
     owner_id = str(ObjectId())
 
-    service.repository.update_status.side_effect = ValueError(
-        "La prenda ya tiene una publicación activa"
-    )
+    service.repository.find_by_id.return_value = {
+        "_id": ObjectId(exchange_id),
+        "owner_id": owner_id,
+        "status": "disponible",
+    }
 
-    with pytest.raises(ValueError, match="ya tiene una"):
+    with pytest.raises(ValueError, match="Solo se puede finalizar"):
         await service.update_status(
-            exchange_id, owner_id, "disponible"
+            exchange_id, owner_id, "intercambiado"
         )
 
-    service.repository.update_status.assert_awaited_once_with(
-        exchange_id, owner_id, "disponible"
-    )
-
+    service.repository.complete_if_reserved.assert_not_awaited()
 
 @pytest.mark.asyncio
 async def test_update_status_does_not_modify_other_users_exchange(service):
     exchange_id = str(ObjectId())
-    other_owner_id = str(ObjectId())
+    actual_owner_id = str(ObjectId())
+    other_user_id = str(ObjectId())
 
-    service.repository.update_status.return_value = None
+    service.repository.find_by_id.return_value = {
+        "_id": ObjectId(exchange_id),
+        "owner_id": actual_owner_id,
+        "status": "reservado",
+    }
 
     result = await service.update_status(
-        exchange_id, other_owner_id, "intercambiado"
+        exchange_id, other_user_id, "intercambiado"
     )
 
     assert result is None
-    service.repository.update_status.assert_awaited_once_with(
-        exchange_id, other_owner_id, "intercambiado"
-    )
+    service.repository.find_by_id.assert_awaited_once_with(exchange_id)
+    service.repository.complete_if_reserved.assert_not_awaited()

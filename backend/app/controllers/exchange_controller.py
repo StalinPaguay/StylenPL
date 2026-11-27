@@ -1,4 +1,4 @@
-"""Controlador de publicaciones de intercambio."""
+﻿"""Controlador de publicaciones de intercambio."""
 
 from fastapi import HTTPException, status
 
@@ -41,29 +41,37 @@ class ExchangeController:
         return [ExchangeResponse(**item) for item in exchanges]
 
     async def get_by_id(self, exchange_id: str) -> ExchangeResponse:
-        """Consultar una publicaciÃ³n."""
+        """Consultar una publicaciÃƒÂ³n."""
         exchange = await self.service.get_by_id(exchange_id)
 
         if exchange is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="PublicaciÃ³n no encontrada",
+                detail="PublicaciÃƒÂ³n no encontrada",
             )
 
         return ExchangeResponse(**exchange)
 
     async def delete(self, exchange_id: str, owner_id: str) -> None:
-        """Eliminar una publicaciÃ³n propia."""
-        deleted = await self.service.delete(exchange_id, owner_id)
+        """Eliminar una publicaciÃƒÂ³n propia."""
+        try:
+            deleted = await self.service.delete(exchange_id, owner_id)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=str(exc),
+            ) from exc
 
         if not deleted:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="PublicaciÃ³n no encontrada",
+                detail="PublicaciÃƒÂ³n no encontrada",
             )
 
-    async def update_status(self, exchange_id: str, owner_id: str, new_status: str):
-        """Actualizar el estado de una publicación propia."""
+    async def update_status(
+        self, exchange_id: str, owner_id: str, new_status: str
+    ) -> ExchangeResponse:
+        """Actualizar el estado de una publicaciÃ³n propia."""
         try:
             exchange = await self.service.update_status(
                 exchange_id, owner_id, new_status
@@ -77,7 +85,35 @@ class ExchangeController:
         if exchange is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Publicación no encontrada",
+                detail="PublicaciÃ³n no encontrada",
             )
 
-        return exchange
+        return ExchangeResponse(**exchange)
+
+    async def update(self, exchange_id: str, owner_id: str, data):
+        """Editar una publicaciÃ³n perteneciente al usuario autenticado."""
+        try:
+            exchange = await self.service.update(exchange_id, owner_id, data)
+        except ValueError as exc:
+            message = str(exc)
+            is_conflict = (
+                "No se puede editar una publicación" in message
+                or "cambió de estado durante la edición" in message
+            )
+
+            raise HTTPException(
+                status_code=(
+                    status.HTTP_409_CONFLICT
+                    if is_conflict
+                    else status.HTTP_422_UNPROCESSABLE_CONTENT
+                ),
+                detail=message,
+            ) from exc
+
+        if exchange is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="PublicaciÃ³n no encontrada",
+            )
+
+        return ExchangeResponse(**exchange)
